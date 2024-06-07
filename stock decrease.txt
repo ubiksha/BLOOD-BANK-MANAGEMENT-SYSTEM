@@ -1,0 +1,206 @@
+package BB;
+
+import java.awt.EventQueue;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import java.awt.Font;
+import javax.swing.JSeparator;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JScrollPane;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.awt.event.ActionEvent;
+import javax.swing.ImageIcon;
+
+public class stockdecrease extends JFrame {
+
+    private static final long serialVersionUID = 1L;
+    private JPanel contentPane;
+    private JTextField textField;
+    private JTable table_1;
+
+    /**
+     * Launch the application.
+     */
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    stockdecrease frame = new stockdecrease();
+                    frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    /**
+     * Create the frame.
+     */
+    public stockdecrease() {
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(100, 100, 725, 565);
+        contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+        setContentPane(contentPane);
+        contentPane.setLayout(null);
+
+        JLabel lblNewLabel = new JLabel("STOCK (DECREASE)");
+        lblNewLabel.setBounds(270, 36, 45, 13);
+        lblNewLabel.setFont(new Font("Tahoma", Font.ITALIC, 30));
+        contentPane.add(lblNewLabel);
+
+        JLabel lblNewLabel_1 = new JLabel("STOCK (DECREASE)");
+        lblNewLabel_1.setBounds(226, 13, 339, 58);
+        lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 30));
+        contentPane.add(lblNewLabel_1);
+
+        JSeparator separator = new JSeparator();
+        separator.setBounds(10, 82, 955, 2);
+        contentPane.add(separator);
+
+        JLabel lblNewLabel_2 = new JLabel("bloodgroup");
+        lblNewLabel_2.setBounds(41, 115, 132, 25);
+        lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 20));
+        contentPane.add(lblNewLabel_2);
+
+        final JComboBox<String> comboBox = new JComboBox<String>();
+        comboBox.setBounds(186, 119, 56, 21);
+        comboBox.setFont(new Font("Tahoma", Font.BOLD, 20));
+        comboBox.setModel(new DefaultComboBoxModel<String>(new String[]{"A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"}));
+        contentPane.add(comboBox);
+
+        JLabel lblNewLabel_3 = new JLabel("UNITS");
+        lblNewLabel_3.setBounds(308, 120, 69, 15);
+        lblNewLabel_3.setFont(new Font("Tahoma", Font.BOLD, 20));
+        contentPane.add(lblNewLabel_3);
+
+        textField = new JTextField();
+        textField.setBounds(410, 122, 96, 19);
+        contentPane.add(textField);
+        textField.setColumns(10);
+
+        JButton btnNewButton = new JButton("UPDATE");
+        btnNewButton.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		String unitStr = textField.getText();
+                String bloodgroup = (String) comboBox.getSelectedItem();
+
+                try {
+                    int newUnits = Integer.parseInt(unitStr);
+
+                    Connection con = connector.getCon(); // Ensure your connection method is defined
+                    String selectQuery = "SELECT unit FROM stock WHERE bloodgroup = ?";
+                    PreparedStatement selectPst = con.prepareStatement(selectQuery);
+                    selectPst.setString(1, bloodgroup);
+                    ResultSet rs = selectPst.executeQuery();
+
+                    if (rs.next()) {
+                        int currentUnits = rs.getInt("unit");
+                        int updatedUnits = currentUnits - newUnits;
+
+                        String updateQuery = "UPDATE stock SET unit = ? WHERE bloodgroup = ?";
+                        PreparedStatement updatePst = con.prepareStatement(updateQuery);
+                        updatePst.setInt(1, updatedUnits);
+                        updatePst.setString(2, bloodgroup);
+
+                        int rowsUpdated = updatePst.executeUpdate();
+                        if (rowsUpdated > 0) {
+                            JOptionPane.showMessageDialog(null, "Updated successfully!");
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Failed to update stock!");
+                        }
+                        updatePst.close();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Blood group not found in stock!");
+                    }
+                    selectPst.close();
+
+                } catch (NumberFormatException nfe) {
+                    JOptionPane.showMessageDialog(null, "Please enter a valid number for units.");
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "SQL error occurred.");
+                }
+        	}
+        });
+        btnNewButton.setBounds(554, 120, 132, 21);
+        btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 20));
+        contentPane.add(btnNewButton);
+
+        JSeparator separator_1 = new JSeparator();
+        separator_1.setBounds(0, 166, 965, 13);
+        contentPane.add(separator_1);
+
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setBounds(41, 189, 652, 268);
+        contentPane.add(scrollPane);
+
+        table_1 = new JTable();
+        scrollPane.setViewportView(table_1);
+        table_1.setModel(new DefaultTableModel(
+                new Object[][]{},
+                new String[]{
+                        "bloodgroup", "unit"
+                }
+        ));
+
+        JButton btnNewButton_1 = new JButton("print");
+        btnNewButton_1.setBounds(69, 480, 85, 21);
+        btnNewButton_1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    Class.forName("com.mysql.cj.jdbc.Driver");
+                    Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bloodbank", "root", "Subiksha@999");
+                    String sql = "select * from stock";
+
+                    PreparedStatement pts = con.prepareStatement(sql);
+                    ResultSet rs = pts.executeQuery();
+                    DefaultTableModel dt = (DefaultTableModel) table_1.getModel();
+                    dt.setRowCount(0);
+                    while (rs.next()) {
+                        Object[] row = {rs.getString("bloodgroup"), rs.getString("unit")};
+                        dt.addRow(row);
+                    }
+                } catch (Exception ec) {
+                    JOptionPane.showMessageDialog(null, "Error fetching data");
+                    ec.printStackTrace();
+                }
+            }
+        });
+        Homepage nextFrame = new Homepage();
+        nextFrame.setVisible(true);
+        btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD, 20));
+        contentPane.add(btnNewButton_1);
+
+        JButton btnNewButton_2 = new JButton("close");
+        btnNewButton_2.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		setVisible(false);
+        	}
+        });
+        btnNewButton_2.setBounds(608, 484, 85, 21);
+        btnNewButton_2.setFont(new Font("Tahoma", Font.BOLD, 20));
+        contentPane.add(btnNewButton_2);
+        
+        JLabel lblNewLabel_4 = new JLabel("New label");
+        lblNewLabel_4.setBounds(0, 0, 817, 528);
+        lblNewLabel_4.setIcon(new ImageIcon("C:\\Users\\Subiksha Senthil\\Pictures\\Screenshots\\IMG_20240223_213554.jpg"));
+        contentPane.add(lblNewLabel_4);
+    }
+}

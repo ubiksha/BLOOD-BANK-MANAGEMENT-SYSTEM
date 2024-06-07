@@ -1,0 +1,285 @@
+package BB;
+
+import java.awt.EventQueue;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import java.awt.Font;
+import javax.swing.JSeparator;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.awt.event.ActionEvent;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
+
+public class Deletedonor extends JFrame {
+
+    private static final long serialVersionUID = 1L;
+    private JPanel contentPane;
+    private JTextField textField;
+    private JTextField textField_1;
+    private JTextField textField_2;
+    private JTextField textField_3;
+    private JTextField textField_4;
+    private JTextField textField_5;
+    private JTextField textField_6;
+    private JTextField textField_7;
+    private JTextField textField_8;
+    private JTextField textField_9;
+
+    /**
+     * Launch the application.
+     */
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    Deletedonor frame = new Deletedonor();
+                    frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    /**
+     * Create the frame.
+     */
+    public Deletedonor() {
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(100, 100, 830, 548);
+        contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+        setContentPane(contentPane);
+        contentPane.setLayout(null);
+
+        JLabel lblNewLabel = new JLabel("DELETE DONOR");
+        lblNewLabel.setBounds(308, 20, 220, 38);
+        lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 24));
+        contentPane.add(lblNewLabel);
+
+        JSeparator separator = new JSeparator();
+        separator.setBounds(0, 74, 816, 9);
+        contentPane.add(separator);
+
+        JLabel lblNewLabel_1 = new JLabel("Donor Id");
+        lblNewLabel_1.setBounds(104, 92, 114, 22);
+        lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 19));
+        contentPane.add(lblNewLabel_1);
+
+        textField = new JTextField();
+        textField.setBounds(249, 93, 96, 19);
+        contentPane.add(textField);
+        textField.setColumns(10);
+
+        JButton btnNewButton = new JButton("Search");
+        btnNewButton.setBounds(462, 93, 101, 21);
+        btnNewButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String donorId = textField.getText();
+                try {
+                    Connection con = connector.getCon();
+                    Statement st = con.createStatement();
+                    ResultSet rs = st.executeQuery("SELECT * FROM donar WHERE donarId = '" + donorId + "'");
+
+                    if (rs.next()) {
+                        textField_1.setText(rs.getString(2)); // Full name
+                        textField_2.setText(rs.getString(3)); // Father's name
+                        textField_3.setText(rs.getString(4)); // Mother's name
+                        textField_4.setText(rs.getString(5)); // Date of birth
+                        textField_5.setText(rs.getString(6)); // Mobile number
+                        textField_6.setText(rs.getString(8)); // Email
+                        textField_7.setText(rs.getString(9)); // Blood group
+                        textField_8.setText(rs.getString(10)); // City
+                        textField_9.setText(rs.getString(11)); // Address
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Donor ID does not exist");
+                    }
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+        btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 16));
+        contentPane.add(btnNewButton);
+
+        JSeparator separator_1 = new JSeparator();
+        separator_1.setBounds(0, 124, 816, 2);
+        contentPane.add(separator_1);
+
+        JLabel lblNewLabel_2 = new JLabel("Full Name");
+        lblNewLabel_2.setBounds(10, 146, 96, 22);
+        lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 16));
+        contentPane.add(lblNewLabel_2);
+
+        textField_1 = new JTextField();
+        textField_1.setBounds(147, 150, 158, 19);
+        contentPane.add(textField_1);
+        textField_1.setColumns(10);
+
+        JLabel lblNewLabel_3 = new JLabel("Father Name");
+        lblNewLabel_3.setBounds(10, 197, 104, 22);
+        lblNewLabel_3.setFont(new Font("Tahoma", Font.BOLD, 16));
+        contentPane.add(lblNewLabel_3);
+
+        JLabel lblNewLabel_4 = new JLabel("Mother Name");
+        lblNewLabel_4.setBounds(10, 243, 114, 22);
+        lblNewLabel_4.setFont(new Font("Tahoma", Font.BOLD, 16));
+        contentPane.add(lblNewLabel_4);
+
+        JLabel lblNewLabel_5 = new JLabel("Date of Birth");
+        lblNewLabel_5.setBounds(10, 285, 114, 28);
+        lblNewLabel_5.setFont(new Font("Tahoma", Font.BOLD, 16));
+        contentPane.add(lblNewLabel_5);
+
+        JLabel lblNewLabel_6 = new JLabel("Mobile Number");
+        lblNewLabel_6.setBounds(10, 339, 158, 29);
+        lblNewLabel_6.setFont(new Font("Tahoma", Font.BOLD, 16));
+        contentPane.add(lblNewLabel_6);
+
+        JLabel lblNewLabel_6_1 = new JLabel("Gender");
+        lblNewLabel_6_1.setBounds(10, 389, 158, 29);
+        lblNewLabel_6_1.setFont(new Font("Tahoma", Font.BOLD, 16));
+        contentPane.add(lblNewLabel_6_1);
+
+        JLabel lblNewLabel_6_2 = new JLabel("Email");
+        lblNewLabel_6_2.setBounds(405, 146, 158, 29);
+        lblNewLabel_6_2.setFont(new Font("Tahoma", Font.BOLD, 16));
+        contentPane.add(lblNewLabel_6_2);
+
+        JLabel lblNewLabel_6_3 = new JLabel("Blood Group");
+        lblNewLabel_6_3.setBounds(405, 204, 158, 29);
+        lblNewLabel_6_3.setFont(new Font("Tahoma", Font.BOLD, 16));
+        contentPane.add(lblNewLabel_6_3);
+
+        JLabel lblNewLabel_6_4 = new JLabel("City");
+        lblNewLabel_6_4.setBounds(405, 261, 158, 29);
+        lblNewLabel_6_4.setFont(new Font("Tahoma", Font.BOLD, 16));
+        contentPane.add(lblNewLabel_6_4);
+
+        JLabel lblNewLabel_6_5 = new JLabel("Complete Address");
+        lblNewLabel_6_5.setBounds(405, 326, 158, 29);
+        lblNewLabel_6_5.setFont(new Font("Tahoma", Font.BOLD, 16));
+        contentPane.add(lblNewLabel_6_5);
+
+        textField_2 = new JTextField();
+        textField_2.setBounds(147, 201, 158, 19);
+        textField_2.setColumns(10);
+        contentPane.add(textField_2);
+
+        textField_3 = new JTextField();
+        textField_3.setBounds(147, 247, 158, 19);
+        textField_3.setColumns(10);
+        contentPane.add(textField_3);
+
+        textField_4 = new JTextField();
+        textField_4.setBounds(147, 292, 158, 19);
+        textField_4.setColumns(10);
+        contentPane.add(textField_4);
+
+        textField_5 = new JTextField();
+        textField_5.setBounds(147, 346, 158, 19);
+        textField_5.setColumns(10);
+        contentPane.add(textField_5);
+
+        JComboBox<String> comboBox = new JComboBox<>();
+        comboBox.setBounds(151, 395, 78, 21);
+        comboBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        comboBox.setModel(new DefaultComboBoxModel<>(new String[]{"Male", "Female"}));
+        contentPane.add(comboBox);
+
+        textField_6 = new JTextField();
+        textField_6.setBounds(561, 153, 158, 19);
+        textField_6.setColumns(10);
+        contentPane.add(textField_6);
+
+        textField_7 = new JTextField();
+        textField_7.setBounds(561, 211, 158, 19);
+        textField_7.setColumns(10);
+        contentPane.add(textField_7);
+
+        textField_8 = new JTextField();
+        textField_8.setBounds(561, 268, 158, 19);
+        textField_8.setColumns(10);
+        contentPane.add(textField_8);
+
+        textField_9 = new JTextField();
+        textField_9.setBounds(597, 334, 158, 19);
+        textField_9.setColumns(10);
+        contentPane.add(textField_9);
+
+        JSeparator separator_2 = new JSeparator();
+        separator_2.setBounds(0, 447, 816, 2);
+        contentPane.add(separator_2);
+
+        JButton btnNewButton_1 = new JButton("Delete");
+        btnNewButton_1.setBounds(38, 470, 101, 31);
+        btnNewButton_1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String donorId = textField.getText();
+                try {
+                    Connection con = connector.getCon();
+                    Statement st = con.createStatement();
+                    int result = st.executeUpdate("DELETE FROM donar WHERE donarId = '" + donorId + "'");
+                    
+                  //  Homepage nextFrame = new Homepage();
+                   // nextFrame.setVisible(true);
+                    if (result > 0) {
+                        JOptionPane.showMessageDialog(null, "Successfully Deleted");
+                        setVisible(false);
+                        //new Deletedonor().setVisible(true);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Donor ID does not exist");
+                    }
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+        Homepage nextFrame = new Homepage();
+        nextFrame.setVisible(true);
+		
+        btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD, 16));
+        contentPane.add(btnNewButton_1);
+
+        JButton btnNewButton_2 = new JButton("Reset");
+        btnNewButton_2.setBounds(263, 470, 101, 31);
+        btnNewButton_2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Clear all text fields
+            	setVisible(false);
+                new Deletedonor().setVisible(true);
+            }
+        });
+        btnNewButton_2.setFont(new Font("Tahoma", Font.BOLD, 16));
+        contentPane.add(btnNewButton_2);
+
+        JButton btnNewButton_3 = new JButton("Close");
+        btnNewButton_3.setBounds(484, 470, 101, 31);
+        btnNewButton_3.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	setVisible(false);
+                //new Deletedonor().setVisible(true);
+                // Close the frame
+               // dispose();
+            }
+        });
+        btnNewButton_3.setFont(new Font("Tahoma", Font.BOLD, 16));
+        contentPane.add(btnNewButton_3);
+        
+        JLabel lblNewLabel_7 = new JLabel("New label");
+        lblNewLabel_7.setBounds(48, 1, 758, 511);
+        lblNewLabel_7.setIcon(new ImageIcon("C:\\Users\\Subiksha Senthil\\Pictures\\Screenshots\\IMG_20240223_213634.jpg"));
+        contentPane.add(lblNewLabel_7);
+    }
+}

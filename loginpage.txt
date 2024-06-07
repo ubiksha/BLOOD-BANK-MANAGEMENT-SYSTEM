@@ -1,0 +1,240 @@
+package BB;
+
+import java.awt.EventQueue;
+import javax.swing.*;
+import javax.swing.text.JTextComponent;
+
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Random;
+import java.awt.event.ActionEvent;
+import java.awt.Font;
+
+public class B {
+
+    private JFrame frame;
+    private JTextField user;
+    private JPasswordField pass;
+    private JLabel error;
+    private Connection con;
+    private JTextField textField;
+
+    /**
+     * Launch the application.
+     */
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    B window = new B();
+                    window.frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    /**
+     * Create the application.
+     */
+    public B() {
+        initialize();
+    }
+
+    /**
+     * Initialize the contents of the frame.
+     */
+    
+    private void initialize() {
+        frame = new JFrame();
+        con = connector.getCon(); // Assuming connector is a class handling database connection
+
+        frame.setBounds(100, 100, 495, 381);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().setLayout(null);
+
+        final JButton btnNewButton = new JButton("SIGNUP");
+        btnNewButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                new login().setVisible(true);
+            }
+        });
+        
+        JLabel lblNewLabel_3 = new JLabel("new user ?");
+        lblNewLabel_3.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        lblNewLabel_3.setBounds(292, 277, 88, 26);
+        frame.getContentPane().add(lblNewLabel_3);
+        btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 18));
+        btnNewButton.setBounds(314, 313, 118, 21);
+        frame.getContentPane().add(btnNewButton);
+
+        JLabel lblNewLabel = new JLabel("Username");
+        lblNewLabel.setBounds(50, 123, 118, 20);
+        lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
+        frame.getContentPane().add(lblNewLabel);
+
+        JLabel lblNewLabel_1 = new JLabel("Password");
+        lblNewLabel_1.setBounds(50, 184, 128, 20);
+        lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 18));
+        frame.getContentPane().add(lblNewLabel_1);
+
+        user = new JTextField();
+        user.setBounds(248, 127, 150, 20);
+        frame.getContentPane().add(user);
+        user.setColumns(10);
+
+        pass = new JPasswordField();
+        pass.setBounds(248, 184, 150, 20);
+        frame.getContentPane().add(pass);
+
+        final JButton login = new JButton("Login");
+        login.setBounds(187, 266, 80, 20);
+        login.setFont(new Font("Tahoma", Font.BOLD, 16));
+        login.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                	    String us = user.getText();
+                	    String ps = pass.getText();
+                	   // System.out.println("Username: " + us);
+                	   // System.out.println("Password: " + ps);
+
+                	    // Load the JDBC driver
+                	    Class.forName("com.mysql.cj.jdbc.Driver");
+                	   // System.out.println("Driver loaded successfully");
+
+                	    // Establish the connection
+                	    Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bloodbank", "root", "Subiksha@999");
+                	   // System.out.println("Connection established");
+
+                	    // Create the statement
+                	    Statement st = con.createStatement();
+                	   // System.out.println("Statement created");
+
+                	    // Execute the query
+                	    String sql = "SELECT * FROM access";
+                	    ResultSet rs = st.executeQuery(sql);
+                	 //   System.out.println("Query executed");
+
+                	    boolean isAuthenticated = false;
+
+                	    // Process the result set
+                	    while (rs.next()) {
+                	        String username = rs.getString("username");
+                	        String password = rs.getString("password");
+
+                	    //    System.out.println("Checking credentials: " + username + " / " + password);
+
+                	        if (us.equals(username) && ps.equals(password)) {
+                	          //  new Homepage().setVisible(true);
+                	          //  System.out.println("Authentication successful");
+                	            JOptionPane.showMessageDialog(null, "Login Successfull");
+                	            isAuthenticated = true;
+                	            new Homepage().setVisible(true);
+                	            break;
+                	        }
+                	    }
+
+                	    if (!isAuthenticated) {
+                	        user.setText("");
+                	        pass.setText("");
+                	       // System.out.println("Authentication failed");
+                	        JOptionPane.showMessageDialog(null, "invalid username or password");
+                	    }
+
+                	    // Close the resources
+                	    rs.close();
+                	    st.close();
+                	    con.close();
+
+                	} catch (Exception e1) {
+                	    e1.printStackTrace();
+                	    // Optionally, show a message dialog
+                	    // JOptionPane.showMessageDialog(null, "Error while establishing connection", "Error", JOptionPane.ERROR_MESSAGE);
+                	}
+
+                
+        }});
+        frame.getContentPane().add(login);
+
+        final JButton forget = new JButton("FORGOT PASSWORD");
+        forget.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    forgotpassword frame = new forgotpassword();
+                    frame.setVisible(true);
+                    int i = 1;
+                    String us1 = user.getText();
+                    String np = new String(pass.getPassword());
+                    String cp = new String(pass.getPassword());
+                    Class.forName("com.mysql.cj.jdbc.Driver");
+                    Connection con1 = DriverManager.getConnection("jdbc:mysql://localhost:3306/bloodbank", "root", "Subiksha@999");
+                    Statement st1 = con1.createStatement();
+                    String sql1 = "SELECT * FROM access";
+                    ResultSet res1 = st1.executeQuery(sql1);
+                    while (res1.next()) {
+                        String use1 = res1.getString("username");
+                        System.out.print("1");
+                        if (us1.equals(use1) && np.equals(cp)) {
+                            String sql2 = "UPDATE access SET password = ? WHERE username = ?";
+                            PreparedStatement pts = con1.prepareStatement(sql2);
+                            pts.setString(1, np);
+                            pts.setInt(2, i);
+                            System.out.print(np);
+                            System.out.println("2");
+                            pts.executeUpdate();
+                            System.out.print("success");
+                            JOptionPane.showMessageDialog(forget, "Data updated", "Updated", -1);
+                            try {
+                                forgotpassword newframe = new forgotpassword();
+                                newframe.setVisible(true);
+                                SwingUtilities.windowForComponent(forget).dispose();
+                            } catch (Exception a) {
+                                //JOptionPane.showMessageDialog(forget, this, "Error while establishing connection failed", 0);
+                            }
+                        } else {
+                            user.setText("");
+                            pass.setText("");
+                        }
+                        i++;
+                    }
+                } catch (Exception os) {
+                    System.out.print(os);
+                    JOptionPane.showMessageDialog(login, this, "Error while establishing connection failed", 0);
+                }
+            }
+        });
+        forget.setFont(new Font("Tahoma", Font.BOLD, 15));
+        forget.setBounds(10, 314, 213, 21);
+        frame.getContentPane().add(forget);
+
+        JLabel lblNewLabel_2 = new JLabel("New label");
+        lblNewLabel_2.setIcon(new ImageIcon("C:\\Users\\Subiksha Senthil\\Desktop\\IMG_20240223_213539.jpg"));
+        lblNewLabel_2.setBounds(0, 0, 481, 344);
+        frame.getContentPane().add(lblNewLabel_2);
+
+        error = new JLabel("");
+        error.setBounds(141, 70, 229, 20);
+        frame.getContentPane().add(error);
+        
+        JLabel label = new JLabel("New label");
+        label.setBounds(64, 214, 45, 13);
+        frame.getContentPane().add(label);
+        
+        textField = new JTextField();
+        textField.setBounds(248, 211, 96, 19);
+        frame.getContentPane().add(textField);
+        textField.setColumns(10);
+        
+        JRadioButton rdbtnNewRadioButton = new JRadioButton("New radio button");
+        rdbtnNewRadioButton.setBounds(273, 250, 103, 21);
+        frame.getContentPane().add(rdbtnNewRadioButton);
+    }
+
+	
+}

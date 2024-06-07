@@ -1,0 +1,177 @@
+package BB;
+
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import java.awt.Font;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JLabel;
+import javax.swing.ImageIcon;
+
+public class Homepage extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Homepage frame = new Homepage();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public Homepage() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 757, 455);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JMenu mnNewMenu_4 = new JMenu("Blood request");
+		mnNewMenu_4.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		mnNewMenu_4.setBounds(110, 0, 145, 26);
+		contentPane.add(mnNewMenu_4);
+		
+		JMenuItem mntmNewMenuItem_8 = new JMenuItem("Give request for blood");
+		mntmNewMenuItem_8.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				v nextFrame = new v();
+                nextFrame.setVisible(true);
+				
+			}
+		});
+		mnNewMenu_4.add(mntmNewMenuItem_8);
+		
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.setBounds(10, 0, 101, 22);
+		contentPane.add(menuBar);
+		
+		JMenu mnNewMenu = new JMenu("Donors");
+		mnNewMenu.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		menuBar.add(mnNewMenu);
+		
+		JMenuItem mntmNewMenuItem = new JMenuItem("Add new");
+		mntmNewMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			    addnewdonar nextFrame = new addnewdonar();
+                nextFrame.setVisible(true);
+				
+			}
+		});
+		mntmNewMenuItem.setFont(new Font("Segoe UI", Font.BOLD, 13));
+		mnNewMenu.add(mntmNewMenuItem);
+		
+		JMenuItem mntmNewMenuItem_6 = new JMenuItem("Update donor details");
+		mntmNewMenuItem_6.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				front nextFrame = new front();
+                nextFrame.setVisible(true);
+			}
+		});
+		mntmNewMenuItem_6.setFont(new Font("Segoe UI", Font.BOLD, 13));
+		mnNewMenu.add(mntmNewMenuItem_6);
+		
+		JMenuItem mntmNewMenuItem_7 = new JMenuItem("All donor details");
+		mntmNewMenuItem_7.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				donors nextFrame = new donors();
+                nextFrame.setVisible(true);
+			}
+		});
+		mntmNewMenuItem_7.setFont(new Font("Segoe UI", Font.BOLD, 13));
+		mnNewMenu.add(mntmNewMenuItem_7);
+		
+		JMenu mnNewMenu_1 = new JMenu("Search Blood Donor");
+		mnNewMenu_1.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		mnNewMenu_1.setBounds(265, 0, 215, 26);
+		contentPane.add(mnNewMenu_1);
+		
+		JMenuItem mntmNewMenuItem_1 = new JMenuItem("LOCATION");
+		mntmNewMenuItem_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				searchdonorlocation nextFrame = new searchdonorlocation(); 
+                nextFrame.setVisible(true);
+				
+			}
+		});
+		mntmNewMenuItem_1.setFont(new Font("Segoe UI", Font.BOLD, 13));
+		mnNewMenu_1.add(mntmNewMenuItem_1);
+		
+		JMenuItem mntmNewMenuItem_2 = new JMenuItem("BLOOD GROUP");
+		mntmNewMenuItem_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				searchdonorblood nextFrame = new searchdonorblood();
+                nextFrame.setVisible(true);
+			}
+			
+		});
+		mntmNewMenuItem_2.setFont(new Font("Segoe UI", Font.BOLD, 13));
+		mnNewMenu_1.add(mntmNewMenuItem_2);
+		
+		JMenu mnNewMenu_2 = new JMenu("Stock");
+		mnNewMenu_2.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		mnNewMenu_2.setBounds(473, 0, 115, 26);
+		contentPane.add(mnNewMenu_2);
+		
+		JMenuItem mntmNewMenuItem_3 = new JMenuItem("Increase");
+		mntmNewMenuItem_3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				stockincrease nextFrame = new stockincrease();
+                nextFrame.setVisible(true);
+			}
+		});
+		mntmNewMenuItem_3.setFont(new Font("Segoe UI", Font.BOLD, 13));
+		mnNewMenu_2.add(mntmNewMenuItem_3);
+		
+		JMenuItem mntmNewMenuItem_4 = new JMenuItem("Decrease");
+		mntmNewMenuItem_4.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				stockdecrease nextFrame = new stockdecrease();
+                nextFrame.setVisible(true);
+			}
+		});
+		mntmNewMenuItem_4.setFont(new Font("Segoe UI", Font.BOLD, 13));
+		mnNewMenu_2.add(mntmNewMenuItem_4);
+		
+		JMenu mnNewMenu_3 = new JMenu("Delete Donor");
+		mnNewMenu_3.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		mnNewMenu_3.setBounds(567, 0, 166, 26);
+		contentPane.add(mnNewMenu_3);
+		
+		JMenuItem mntmNewMenuItem_5 = new JMenuItem("Delete donor");
+		mntmNewMenuItem_5.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Deletedonor nextFrame = new Deletedonor();
+                nextFrame.setVisible(true);
+			}
+		});
+		mntmNewMenuItem_5.setFont(new Font("Segoe UI", Font.BOLD, 13));
+		mnNewMenu_3.add(mntmNewMenuItem_5);
+		
+		JLabel lblNewLabel = new JLabel("New label");
+		lblNewLabel.setIcon(new ImageIcon("C:\\Users\\Subiksha Senthil\\Pictures\\blood13.jpg"));
+		lblNewLabel.setBounds(0, 0, 743, 418);
+		contentPane.add(lblNewLabel);
+	}
+
+}

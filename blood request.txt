@@ -1,0 +1,183 @@
+package BB;
+
+import java.awt.Color;
+import java.awt.EventQueue;
+import java.sql.*;
+import javax.swing.*;
+import java.awt.Font;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+
+public class v extends JFrame {
+
+    private static final long serialVersionUID = 1L;
+    private JTextField textField;
+    private JTextField textField_1;
+    private JComboBox<String> comboBox; // Declare comboBox here
+    private JComboBox<String> comboBox_1; // Declare comboBox_1 here
+    private JLabel validationLabel; // Declare validationLabel here
+
+    // Database connection
+    private Connection con;
+
+    /**
+     * Launch the application.
+     */
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    v frame = new v();
+                    frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    /**
+     * Create the frame.
+     */
+    public v() {
+        // Initialize database connection
+        con = connector.getCon();
+        getContentPane().setLayout(null);
+
+        JLabel lblNewLabel = new JLabel("ENTER YOUR DETAILS TO REQUEST FOR BLOOD");
+        lblNewLabel.setBounds(88, 64, 610, 25);
+        lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 20));
+        getContentPane().add(lblNewLabel);
+
+        JLabel lblNewLabel_2 = new JLabel("Mobile Number");
+        lblNewLabel_2.setBounds(80, 213, 151, 61);
+        lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 18));
+        getContentPane().add(lblNewLabel_2);
+
+        JLabel lblNewLabel_3 = new JLabel("Blood Group");
+        lblNewLabel_3.setBounds(88, 303, 143, 25);
+        lblNewLabel_3.setFont(new Font("Tahoma", Font.BOLD, 18));
+        getContentPane().add(lblNewLabel_3);
+
+        textField = new JTextField();
+        textField.setBounds(273, 180, 228, 19);
+        getContentPane().add(textField);
+        textField.setColumns(10);
+
+        textField_1 = new JTextField();
+        textField_1.setBounds(273, 237, 228, 19);
+        getContentPane().add(textField_1);
+        textField_1.setColumns(10);
+
+        // Add key listener to validate phone number while typing
+        textField_1.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                String Mobile = textField_1.getText();
+                if (!isValidPhoneNumber(Mobile)) {
+                    validationLabel.setText("Invalid phone number");
+                    validationLabel.setForeground(Color.RED);
+                    validationLabel.setVisible(true);
+                } else {
+                    validationLabel.setVisible(false);
+                }
+            }
+        });
+
+        validationLabel = new JLabel("Invalid phone number"); // Initialize validationLabel here
+        validationLabel.setBounds(273, 257, 228, 19);
+        validationLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
+        validationLabel.setForeground(Color.RED);
+        validationLabel.setVisible(false);
+        getContentPane().add(validationLabel);
+
+        JButton btnNewButton = new JButton("SUBMIT");
+        btnNewButton.setBounds(260, 442, 151, 21);
+        btnNewButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String Name = textField.getText();
+                String Mobile = textField_1.getText();
+                String Blood = (String) comboBox.getSelectedItem(); // corrected reference
+                String City = (String) comboBox_1.getSelectedItem(); // corrected reference
+
+                // Validate phone number before submission
+                if (!isValidPhoneNumber(Mobile)) {
+                    JOptionPane.showMessageDialog(null, "Invalid phone number. Please enter a 10-digit number.");
+                    return;
+                }
+
+                try {
+                    if (con != null) {
+                        String query = "INSERT INTO bank VALUES (?,?,?,?)";
+                        PreparedStatement pst = con.prepareStatement(query);
+                        pst.setString(1, Name);
+                        pst.setString(2, Mobile);
+                        pst.setString(3, Blood);
+                        pst.setString(4, City);
+
+                        // addnewdonar nextFrame = new addnewdonar();
+                        // nextFrame.setVisible(true);
+                        Homepage nextFrame = new Homepage();
+                        nextFrame.setVisible(true);
+
+                        int rowsAffected = pst.executeUpdate();
+                        if (rowsAffected > 0) {
+                            JOptionPane.showMessageDialog(null, "Successfully updated");
+                            setVisible(false);
+                            new v().setVisible(true);
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Failed to update");
+                        }
+                        pst.close();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Database connection is null");
+                    }
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+        btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 20));
+        getContentPane().add(btnNewButton);
+
+        JLabel lblNewLabel_4 = new JLabel("City");
+        lblNewLabel_4.setBounds(88, 356, 67, 25);
+        lblNewLabel_4.setFont(new Font("Tahoma", Font.BOLD, 18));
+        getContentPane().add(lblNewLabel_4);
+
+        JLabel lblNewLabel_1 = new JLabel("Name");
+        lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 18));
+        lblNewLabel_1.setBounds(88, 170, 143, 33);
+        getContentPane().add(lblNewLabel_1);
+
+        comboBox = new JComboBox<String>(); // Initialize comboBox here
+        comboBox.setFont(new Font("Tahoma", Font.BOLD, 12));
+        comboBox.setModel(new DefaultComboBoxModel<String>(new String[]{"select your blood group", "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"}));
+        comboBox.setBounds(273, 308, 228, 21);
+        getContentPane().add(comboBox);
+
+        comboBox_1 = new JComboBox<String>(); // Initialize comboBox_1 here
+        comboBox_1.setFont(new Font("Tahoma", Font.BOLD, 12));
+        comboBox_1.setModel(new DefaultComboBoxModel<String>(new String[]{"select your city", "Ariyalur", "Chengalpattu", "Chennai", "Coimbatore", "Cuddalor", "Dharmapuri", "Dindigul", "Erode", "Kallakurichi", "Kancheepuram", "Karur", "Krishnagiri", "Madurai", "Mayiladuthurai", "Nagapattinam", "Nagercoil", "Namakkal", "Perambalur", "Pudukkottai", "Ramanathapuram", "Ranipet", "Salem", "Sivagangai", "Tenkasi", "Thanjavur", "Theni", "Thiruvallur", "Thiruvarur", "Thoothukudi", "Tiruchirappalli", "Tirunelveli", "Tiruppur", "Tiruvannamalai", "Ootacamund", "Vellore", "Viluppuram", "Virudhunagar"}));
+        comboBox_1.setBounds(273, 373, 228, 21);
+        getContentPane().add(comboBox_1);
+
+        JLabel lblNewLabel_5 = new JLabel("New label");
+        lblNewLabel_5.setIcon(new ImageIcon("C:\\Users\\Subiksha Senthil\\Desktop\\IMG_20240223_213634.jpg"));
+        lblNewLabel_5.setBounds(0, 0, 725, 516);
+        getContentPane().add(lblNewLabel_5);
+    }
+
+    /**
+     * Validates the phone number.
+     *
+     * @param phoneNumber the phone number to validate
+     * @return true if the phone number is valid, false otherwise
+     */
+    private boolean isValidPhoneNumber(String phoneNumber) {
+        // A valid phone number should be exactly 10 digits long
+        return phoneNumber.matches("\\d{10}");
+    }
+}

@@ -1,0 +1,184 @@
+package BB;
+
+import java.awt.Container;
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.print.PrinterException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+
+public class donors extends JFrame {
+
+    private static final long serialVersionUID = 1L;
+    private JPanel contentPane;
+    private JTable table;
+    private JTextArea textArea;
+
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    donors frame = new donors();
+                    frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public donors() {
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(100, 100, 1364, 732);
+        contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        setContentPane(contentPane);
+        contentPane.setLayout(null);
+
+        JLabel lblNewLabel = new JLabel("ADD DONOR DETAILS");
+        lblNewLabel.setBounds(320, 10, 445, 68);
+        lblNewLabel.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 32));
+        contentPane.add(lblNewLabel);
+
+        JSeparator separator = new JSeparator();
+        separator.setBounds(10, 88, 1074, 2);
+        contentPane.add(separator);
+
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setBounds(10, 140, 709, 203);
+        contentPane.add(scrollPane);
+
+        table = new JTable();
+        scrollPane.setViewportView(table);
+        table.setModel(new DefaultTableModel(
+            new Object[][] {},
+            new String[] {
+                "donorId", "name", "fatherName", "motherName", "DOB", "MobileNo", "gender", "email", "bloodgroup", "city", "address"
+            }
+        ));
+
+        JButton btnExecute = new JButton("EXECUTE");
+        btnExecute.setBounds(268, 416, 129, 21);
+        btnExecute.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                fetchDonorData();
+            }
+        });
+        btnExecute.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 20));
+        contentPane.add(btnExecute);
+
+        JButton btnClose = new JButton("Close");
+        btnClose.setBounds(1154, 673, 116, 21);
+        btnClose.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+            }
+        });
+        btnClose.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 18));
+        contentPane.add(btnClose);
+
+        JScrollPane scrollPane_1 = new JScrollPane();
+        scrollPane_1.setBounds(751, 140, 566, 516);
+        contentPane.add(scrollPane_1);
+
+        textArea = new JTextArea();
+        scrollPane_1.setViewportView(textArea);
+
+        JButton btnNewButton = new JButton("Add record");
+        btnNewButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                addRecordToTextArea();
+            }
+        });
+        btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 16));
+        btnNewButton.setBounds(761, 674, 129, 21);
+        contentPane.add(btnNewButton);
+
+        JButton btnNewButton_1 = new JButton("Print");
+        btnNewButton_1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    textArea.print();
+                } catch (PrinterException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+        btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD, 16));
+        btnNewButton_1.setBounds(984, 674, 85, 21);
+        contentPane.add(btnNewButton_1);
+    }
+
+    private void fetchDonorData() {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bloodbank", "root", "Subiksha@999");
+            Statement st = con.createStatement();
+            String sql = "SELECT * FROM donar";
+            PreparedStatement pts = con.prepareStatement(sql);
+            ResultSet rs = pts.executeQuery();
+            DefaultTableModel dt = (DefaultTableModel) table.getModel();
+            dt.setRowCount(0);
+            while (rs.next()) {
+                Object[] row = {
+                    rs.getString("donarId"), rs.getString("name"), rs.getString("fatherName"),
+                    rs.getString("motherName"), rs.getString("DOB"), rs.getString("mobileNo"),
+                    rs.getString("gender"), rs.getString("email"), rs.getString("bloodGroup"),
+                    rs.getString("city"), rs.getString("address")
+                };
+                dt.addRow(row);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error fetching data");
+            e.printStackTrace();
+        }
+    }
+
+    private void addRecordToTextArea() {
+        textArea.setText(""); // Clear previous content
+        textArea.append("\n\n\n" +
+                "SV BLOOD BANK\t\t\twww.svbloodbank.com\n" +
+                "Phone no:\t\t\temail:svbloodbank@gmail.com\n\n\n" +
+                "\t\tSV BLOOD BANK\n\n");
+        textArea.append("\t\t  AVAILABLE DONOR DETAILS \n\n" +
+                "Reference NO: \t\t\t sv1234" +
+                "\n=======================================================\n\n");
+        textArea.append("              Available donors\n\n\n");
+
+        textArea.append("donorId    name       fatherName      motherName   DOB    MobileNo \n");
+        try {
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bloodbank", "root", "Subiksha@999");
+            Statement st = con.createStatement();
+            String sql = "SELECT * FROM donar";
+            PreparedStatement pts = con.prepareStatement(sql);
+            ResultSet rs = pts.executeQuery();
+            while (rs.next()) {
+                String row = rs.getString(1) + "       " + rs.getString(2) + "       " + rs.getString(3) +
+                        "           " + rs.getString(4) + "          " + rs.getString(5) + "    " + rs.getString(6) + "\n";
+                textArea.append("----------------------------------------------------------------------------------------------------------------------------------------\n");
+                textArea.append(row);
+            }
+            textArea.append("=========================================================\n\n\n\n\n" +
+                    "\t\tTHANKS FOR DONATING BLOOD :))\n" +
+                    "\t       GIVE BLOOD SAVE LIFE\n");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}

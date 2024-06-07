@@ -1,0 +1,161 @@
+package BB;
+
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
+import java.awt.Font;
+import javax.swing.JSeparator;
+import javax.swing.JTextField;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JScrollPane;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.awt.event.ActionEvent;
+import javax.swing.ImageIcon;
+
+public class searchdonorblood extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JTextField textField;
+	private JTable table;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					searchdonorblood frame = new searchdonorblood();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public searchdonorblood() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 853, 522);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel lblNewLabel = new JLabel("Search blood Donor(Blood group)");
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 22));
+		lblNewLabel.setBounds(223, 25, 400, 27);
+		contentPane.add(lblNewLabel);
+		
+		JSeparator separator = new JSeparator();
+		separator.setBounds(0, 76, 839, 11);
+		contentPane.add(separator);
+		
+		JLabel lblNewLabel_1 = new JLabel("Blood Group");
+		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblNewLabel_1.setBounds(165, 97, 124, 27);
+		contentPane.add(lblNewLabel_1);
+		
+		textField = new JTextField();
+		textField.setBounds(366, 104, 235, 19);
+		contentPane.add(textField);
+		textField.setColumns(10);
+		
+		JSeparator separator_1 = new JSeparator();
+		separator_1.setBounds(0, 134, 839, 2);
+		contentPane.add(separator_1);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(37, 164, 769, 229);
+		contentPane.add(scrollPane);
+		
+		table = new JTable();
+		scrollPane.setViewportView(table);
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+				{null, null, null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null, null, null},
+			},
+			new String[] {
+				"donorId", "name", "fatherName", "motherName", "DOB", "mobileNo", "gender", "email", "bloodgroup", "city", "address"
+			}
+		));
+		
+		JButton btnPrint = new JButton("Print");
+		btnPrint.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String bloodgroup = textField.getText();
+                if (bloodgroup.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Please enter an bloodgroup");
+                    return;
+                }
+
+                try {
+                    Class.forName("com.mysql.cj.jdbc.Driver");
+                    Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bloodbank", "root", "Subiksha@999");
+                    String sql = "SELECT * FROM donar WHERE bloodgroup = ?";
+                    PreparedStatement pts = con.prepareStatement(sql);
+                    pts.setString(1, bloodgroup);
+                    ResultSet rs = pts.executeQuery();
+                    DefaultTableModel dt = (DefaultTableModel) table.getModel();
+                    dt.setRowCount(0);
+                    while (rs.next()) {
+                        Object[] o = {
+                            rs.getString("donarId"), rs.getString("name"), rs.getString("fatherName"),
+                            rs.getString("motherName"), rs.getString("DOB"), rs.getString("mobileNo"),
+                            rs.getString("gender"), rs.getString("email"), rs.getString("bloodgroup"),
+                            rs.getString("city"), rs.getString("address")    
+                        };
+                        dt.addRow(o);
+                    }
+                    rs.close();
+                    pts.close();
+                    con.close();
+                } catch (Exception ec) {
+                    JOptionPane.showMessageDialog(null, "An error occurred while fetching the data");
+                    ec.printStackTrace();
+                }
+			}
+		});
+		Homepage nextFrame = new Homepage();
+        nextFrame.setVisible(true);
+		btnPrint.setFont(new Font("Tahoma", Font.BOLD, 21));
+		btnPrint.setBounds(101, 442, 85, 21);
+		contentPane.add(btnPrint);
+		
+		JButton btnClose = new JButton("Close");
+		btnClose.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+			}
+		});
+		btnClose.setFont(new Font("Tahoma", Font.BOLD, 20));
+		btnClose.setBounds(571, 446, 113, 21);
+		contentPane.add(btnClose);
+		
+		JLabel lblNewLabel_2 = new JLabel("New label");
+		lblNewLabel_2.setIcon(new ImageIcon("C:\\Users\\Subiksha Senthil\\Pictures\\blood13.jpg"));
+		lblNewLabel_2.setBounds(0, 0, 839, 485);
+		contentPane.add(lblNewLabel_2);
+	}
+}

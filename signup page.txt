@@ -1,0 +1,200 @@
+package BB;
+
+import java.awt.EventQueue;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import java.awt.Font;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.awt.event.ActionEvent;
+import javax.swing.ImageIcon;
+import java.awt.Color;
+import java.util.Random;
+
+public class login extends JFrame {
+
+    private static final long serialVersionUID = 1L;
+    private JPanel contentPane;
+    private JTextField users;
+    private JTextField passs;
+    private JTextField captchaInput;
+    private JLabel captchaLabel;
+    private JLabel lblNewLabel_2;
+
+    /**
+     * Launch the application.
+     */
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    login frame = new login();
+                    frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    /**
+     * Create the frame.
+     */
+    public login() {
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(100, 100, 688, 357);
+        contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+        setContentPane(contentPane);
+        contentPane.setLayout(null);
+        
+        final JLabel eror_1 = new JLabel("");
+        eror_1.setBounds(221, 272, 398, 19);
+        eror_1.setForeground(new Color(178, 34, 34));
+        eror_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        contentPane.add(eror_1);
+        
+        JLabel lblNewLabel = new JLabel("Username");
+        lblNewLabel.setBounds(117, 72, 169, 51);
+        lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
+        contentPane.add(lblNewLabel);
+        
+        JLabel lblNewLabel_1 = new JLabel("Password");
+        lblNewLabel_1.setBounds(117, 141, 100, 37);
+        lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 18));
+        contentPane.add(lblNewLabel_1);
+        
+        JLabel lblCaptcha = new JLabel("CAPTCHA");
+        lblCaptcha.setBounds(117, 210, 100, 37);
+        lblCaptcha.setFont(new Font("Tahoma", Font.BOLD, 18));
+        contentPane.add(lblCaptcha);
+        
+        users = new JTextField();
+        users.setBounds(300, 91, 169, 19);
+        contentPane.add(users);
+        users.setColumns(10);
+        
+        passs = new JTextField();
+        passs.setBounds(300, 151, 169, 19);
+        contentPane.add(passs);
+        passs.setColumns(10);
+        
+        captchaInput = new JTextField();
+        captchaInput.setBounds(300, 220, 169, 19);
+        contentPane.add(captchaInput);
+        captchaInput.setColumns(10);
+        
+        captchaLabel = new JLabel(generateCaptcha());
+        captchaLabel.setBounds(300, 190, 169, 19);
+        contentPane.add(captchaLabel);
+        
+        final JButton btnNewButton = new JButton("Signup");
+        btnNewButton.setBounds(221, 272, 111, 21);
+        btnNewButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    int er = 0;
+                    String us = users.getText();
+                    String np = passs.getText();
+                    String enteredCaptcha = captchaInput.getText();
+                    String correctCaptcha = captchaLabel.getText();
+
+                    if (!enteredCaptcha.equals(correctCaptcha)) {
+                        eror_1.setText("Invalid CAPTCHA!");
+                        return;
+                    }
+
+                    Class.forName("com.mysql.cj.jdbc.Driver");
+                    Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bloodbank", "root", "Subiksha@999");
+                    Statement st = con.createStatement();
+                    String sql2 = "select count(*) as COUNT from access";
+                    PreparedStatement ps2 = con.prepareStatement(sql2);
+                    ResultSet res2 = ps2.executeQuery();
+                    String sql = "SELECT * FROM access";
+                    ResultSet res1 = st.executeQuery(sql);
+                    String input = np;
+                    int inputLen = input.length();
+                    int uppercount = 0;
+                    int lowercount = 0;
+                    int digitcount = 0;
+                    for (int j = 0; j < inputLen; j++) {
+                        char ch = input.charAt(j);
+                        if (Character.isUpperCase(ch))
+                            uppercount++;
+                        else if (Character.isLowerCase(ch))
+                            lowercount++;
+                        else if (Character.isDigit(ch))
+                            digitcount++;
+                    }
+                    int c = 0;
+                    while (res2.next()) {
+                        c = res2.getInt(1);
+                    }
+                    c = c + 2;
+                    while (res1.next()) {
+                        String use1 = res1.getString("username");
+                        if (us != use1 && uppercount >= 1 && lowercount >= 3 && digitcount >= 1) {
+                            er = 1;
+                            String sql3 = "insert into access values('" + us + "','" + np + "')";
+                            PreparedStatement pts = con.prepareStatement(sql3);
+                            pts.executeUpdate(sql3);
+                            try {
+                                new Homepage().setVisible(true);
+                                SwingUtilities.windowForComponent(btnNewButton).dispose();
+                                JOptionPane.showMessageDialog(btnNewButton, "Account created");
+                            } catch (Exception o) {
+                                JOptionPane.showMessageDialog(btnNewButton, "Error while establishing connection failed", "Error", JOptionPane.ERROR_MESSAGE);
+                            }
+                            break;
+                        }
+                    }
+                    if (er == 0) {
+                        eror_1.setText("Password must contain uppercase, lowercase, number!");
+                    }
+                } catch (Exception r) {
+                    r.printStackTrace();
+                }
+            }
+        });
+        btnNewButton.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 15));
+        contentPane.add(btnNewButton);
+        
+        final JButton refreshCaptchaButton = new JButton(".");
+        refreshCaptchaButton.setBounds(480, 235, 20, 11);
+        refreshCaptchaButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                captchaLabel.setText(generateCaptcha());
+            }
+        });
+        refreshCaptchaButton.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 15));
+        contentPane.add(refreshCaptchaButton);
+
+        lblNewLabel_2 = new JLabel("New label");
+        lblNewLabel_2.setBounds(10, 0, 609, 320);
+        lblNewLabel_2.setIcon(new ImageIcon("C:\\Users\\Subiksha Senthil\\Pictures\\forgot password.jpg"));
+        contentPane.add(lblNewLabel_2);
+    }
+
+    private String generateCaptcha() {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        Random rand = new Random();
+        StringBuilder captcha = new StringBuilder();
+        for (int i = 0; i < 6; i++) {
+            captcha.append(chars.charAt(rand.nextInt(chars.length())));
+        }
+        return captcha.toString();
+    }
+}
+
+

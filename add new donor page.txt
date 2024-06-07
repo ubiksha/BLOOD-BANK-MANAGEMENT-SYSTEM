@@ -1,0 +1,312 @@
+package BB;
+
+import java.awt.Color;
+import java.awt.EventQueue;
+import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.regex.Pattern;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
+import java.awt.Font;
+import javax.swing.JComboBox;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.ImageIcon;
+import com.toedter.calendar.JDateChooser;
+
+public class addnewdonar extends JFrame {
+
+    private static final long serialVersionUID = 1L;
+    private JPanel contentPane;
+    private JTextField textField;
+    private JTextField textField_1;
+    private JTextField textField_2;
+    private JTextField textField_4;
+    private JTextField textField_3;
+    private JTextField textField_5;
+    private JTextField textField_7;
+    private Connection con;
+    private JDateChooser dateChooser;
+    private JLabel eror_1;
+
+    /**
+     * Launch the application.
+     */
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    addnewdonar frame = new addnewdonar();
+                    frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    /**
+     * Create the frame.
+     */
+    public addnewdonar() {
+        JFrame frame = new JFrame();
+        con = connector.getCon();
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(100, 100, 1175, 681);
+        contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+        setContentPane(contentPane);
+        contentPane.setLayout(null);
+        
+        eror_1 = new JLabel("");
+        eror_1.setBounds(237, 428, 148, 13);
+        contentPane.add(eror_1);
+
+        JLabel lblNewLabel = new JLabel("ADD NEW DONOR");
+        lblNewLabel.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 25));
+        lblNewLabel.setBounds(441, 38, 329, 25);
+        contentPane.add(lblNewLabel);
+
+        JLabel lblNewLabel_1 = new JLabel("New Donar ID");
+        lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 18));
+        lblNewLabel_1.setBounds(21, 118, 131, 54);
+        contentPane.add(lblNewLabel_1);
+
+        JLabel lblNewLabel_2 = new JLabel("Full Name");
+        lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 18));
+        lblNewLabel_2.setBounds(21, 196, 131, 13);
+        contentPane.add(lblNewLabel_2);
+
+        JLabel lblNewLabel_3 = new JLabel("Father Name");
+        lblNewLabel_3.setFont(new Font("Tahoma", Font.BOLD, 18));
+        lblNewLabel_3.setBounds(21, 243, 131, 25);
+        contentPane.add(lblNewLabel_3);
+
+        JLabel lblNewLabel_4 = new JLabel("Mother Name");
+        lblNewLabel_4.setFont(new Font("Tahoma", Font.BOLD, 18));
+        lblNewLabel_4.setBounds(21, 294, 131, 22);
+        contentPane.add(lblNewLabel_4);
+
+        JLabel lblNewLabel_5 = new JLabel("Date of Birth");
+        lblNewLabel_5.setFont(new Font("Tahoma", Font.BOLD, 18));
+        lblNewLabel_5.setBounds(21, 348, 131, 13);
+        contentPane.add(lblNewLabel_5);
+
+        JLabel lblNewLabel_6 = new JLabel("Mobile No");
+        lblNewLabel_6.setFont(new Font("Tahoma", Font.BOLD, 18));
+        lblNewLabel_6.setBounds(21, 399, 131, 13);
+        contentPane.add(lblNewLabel_6);
+
+        JLabel lblNewLabel_7 = new JLabel("Gender");
+        lblNewLabel_7.setFont(new Font("Tahoma", Font.BOLD, 18));
+        lblNewLabel_7.setBounds(21, 451, 110, 13);
+        contentPane.add(lblNewLabel_7);
+
+        textField = new JTextField();
+        textField.setBounds(196, 196, 175, 19);
+        contentPane.add(textField);
+        textField.setColumns(10);
+
+        textField_1 = new JTextField();
+        textField_1.setBounds(196, 249, 175, 19);
+        contentPane.add(textField_1);
+        textField_1.setColumns(10);
+
+        textField_2 = new JTextField();
+        textField_2.setBounds(196, 299, 175, 19);
+        contentPane.add(textField_2);
+        textField_2.setColumns(10);
+
+        textField_4 = new JTextField();
+        textField_4.setBounds(196, 399, 175, 19);
+        contentPane.add(textField_4);
+        textField_4.setColumns(10);
+
+        final JComboBox<String> comboBox = new JComboBox<String>();
+        comboBox.setFont(new Font("Tahoma", Font.PLAIN, 18));
+        comboBox.setModel(new DefaultComboBoxModel<String>(new String[] {"Female", "Male", "Other"}));
+        comboBox.setBounds(196, 450, 148, 21);
+        contentPane.add(comboBox);
+
+        JLabel lblNewLabel_8 = new JLabel("E-mail");
+        lblNewLabel_8.setFont(new Font("Tahoma", Font.BOLD, 18));
+        lblNewLabel_8.setBounds(635, 199, 74, 13);
+        contentPane.add(lblNewLabel_8);
+
+        JLabel lblNewLabel_9 = new JLabel("Blood Group");
+        lblNewLabel_9.setFont(new Font("Tahoma", Font.BOLD, 18));
+        lblNewLabel_9.setBounds(635, 252, 135, 13);
+        contentPane.add(lblNewLabel_9);
+
+        JLabel lblNewLabel_10 = new JLabel("City");
+        lblNewLabel_10.setFont(new Font("Tahoma", Font.BOLD, 18));
+        lblNewLabel_10.setBounds(635, 294, 45, 22);
+        contentPane.add(lblNewLabel_10);
+
+        JLabel lblNewLabel_11 = new JLabel("Complete Address");
+        lblNewLabel_11.setFont(new Font("Tahoma", Font.BOLD, 18));
+        lblNewLabel_11.setBounds(635, 348, 167, 13);
+        contentPane.add(lblNewLabel_11);
+
+        textField_3 = new JTextField();
+        textField_3.setBounds(826, 196, 247, 19);
+        contentPane.add(textField_3);
+        textField_3.setColumns(10);
+
+        final JComboBox<String> comboBox_1 = new JComboBox<String>();
+        comboBox_1.setFont(new Font("Tahoma", Font.BOLD, 18));
+        comboBox_1.setModel(new DefaultComboBoxModel<String>(new String[] {"A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"}));
+        comboBox_1.setBounds(826, 248, 110, 21);
+        contentPane.add(comboBox_1);
+
+        final JComboBox<String> comboBox_2 = new JComboBox<String>();
+        comboBox_2.setFont(new Font("Tahoma", Font.BOLD, 18));
+        comboBox_2.setModel(new DefaultComboBoxModel<String>(new String[] {"Ariyalur", "Chengalpattu", "Chennai", "Coimbatore", "Cuddalore", "Dbarmapuri", "Dindigul", "Erode", "Kallakurichi", "Salem"}));
+        comboBox_2.setBounds(826, 298, 131, 28);
+        contentPane.add(comboBox_2);
+
+        textField_5 = new JTextField();
+        textField_5.setBounds(826, 348, 247, 46);
+        contentPane.add(textField_5);
+        textField_5.setColumns(10);
+
+        JButton btnNewButton_1 = new JButton("RESET");
+        btnNewButton_1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+                new addnewdonar().setVisible(true);
+            }
+        });
+        btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD, 20));
+        btnNewButton_1.setBounds(404, 551, 116, 21);
+        contentPane.add(btnNewButton_1);
+
+        JButton btnNewButton_2 = new JButton("CLOSE");
+        btnNewButton_2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+            }
+        });
+        btnNewButton_2.setFont(new Font("Tahoma", Font.BOLD, 20));
+        btnNewButton_2.setBounds(635, 551, 148, 21);
+        contentPane.add(btnNewButton_2);
+
+        textField_7 = new JTextField();
+        textField_7.setFont(new Font("Tahoma", Font.PLAIN, 20));
+        textField_7.setText("1");
+        textField_7.setBounds(196, 139, 23, 19);
+        contentPane.add(textField_7);
+        textField_7.setColumns(10);
+
+        dateChooser = new JDateChooser();
+        dateChooser.setBounds(196, 348, 175, 19);
+        contentPane.add(dateChooser);
+
+        JButton btnNewButton = new JButton("SAVE");
+        btnNewButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String donarId = textField_7.getText();
+                String name = textField.getText();
+                String fatherName = textField_1.getText();
+                String motherName = textField_2.getText();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                String DOB = "";
+                if (dateChooser.getDate() != null) {
+                    DOB = dateFormat.format(dateChooser.getDate());
+                }
+                String mobileNo = textField_4.getText();
+                
+                String gender = (String) comboBox.getSelectedItem();
+                String email = textField_3.getText();
+                String bloodGroup = (String) comboBox_1.getSelectedItem();
+                String city = (String) comboBox_2.getSelectedItem();
+                String address = textField_5.getText();
+                
+
+                try {
+                    String query = "INSERT INTO donar (donarId, name, fatherName, motherName, DOB, mobileNo, gender, email, bloodGroup, city, address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    PreparedStatement pst = con.prepareStatement(query);
+                    pst.setString(1, donarId);
+                    pst.setString(2, name);
+                    pst.setString(3, fatherName);
+                    pst.setString(4, motherName);
+                    pst.setString(5, DOB);
+                    pst.setString(6, mobileNo);
+                    pst.setString(7, gender);
+                    pst.setString(8, email);
+                    pst.setString(9, bloodGroup);
+                    pst.setString(10, city);
+                    pst.setString(11, address);
+
+                    int rowsInserted = pst.executeUpdate();
+                    if (rowsInserted > 0) {
+                        JOptionPane.showMessageDialog(null, "Donor added successfully!");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Failed to add donor!");
+                    }
+                    pst.close();
+                    
+                    Homepage nextFrame = new Homepage();
+                    nextFrame.setVisible(true);
+
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+        btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 20));
+        btnNewButton.setBounds(210, 555, 110, 21);
+        contentPane.add(btnNewButton);
+
+        textField_4.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) {
+                validatePhoneNumber();
+            }
+            public void removeUpdate(DocumentEvent e) {
+                validatePhoneNumber();
+            }
+            public void changedUpdate(DocumentEvent e) {
+                validatePhoneNumber();
+            }
+        });
+
+        JLabel lblNewLabel_12 = new JLabel("New label");
+        lblNewLabel_12.setIcon(new ImageIcon("C:\\Users\\Subiksha Senthil\\Pictures\\blood13.jpg"));
+        lblNewLabel_12.setBounds(0, 0, 1173, 644);
+        contentPane.add(lblNewLabel_12);
+
+        JLabel lblNewLabel_13 = new JLabel("New label");
+        lblNewLabel_13.setBounds(0, 0, 45, 644);
+        contentPane.add(lblNewLabel_13);
+    }
+
+    private void validatePhoneNumber() {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                String phoneNumber = textField_4.getText();
+                Pattern pattern = Pattern.compile("^\\d{10}$");
+                if (pattern.matcher(phoneNumber).matches()) {
+                    eror_1.setText("Valid phone number");
+                    eror_1.setForeground(Color.GREEN);
+                } else {
+                    eror_1.setText("Invalid phone number");
+                    eror_1.setForeground(Color.RED);
+                }
+            }
+        });
+    }
+}
